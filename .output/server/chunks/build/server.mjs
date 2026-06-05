@@ -512,7 +512,7 @@ const _routes = [
   {
     name: "raw-material-stocks",
     path: "/raw-material-stocks",
-    component: () => import('./raw-material-stocks-CvEcIPtR.mjs')
+    component: () => import('./raw-material-stocks-DXUKbOn6.mjs')
   },
   {
     name: "expenditure-categories",

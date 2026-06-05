@@ -44,7 +44,7 @@ export interface RawMaterialStock {
   branch_id: number
   created_user_id: number
   stock: number
-  sold: number
+  remaining: number
   date: string
   raw_material?: { id: number; name: string; unit: string; min_stock: number }
   branch?: Branch

@@ -51,7 +51,7 @@ export const useRawMaterialStore = defineStore('rawMaterial', {
         this.loading = false
       }
     },
-    async saveBulkStock(data: { branch_id: number; date: string; items: { raw_material_id: number; stock: number; sold?: number }[] }) {
+    async saveBulkStock(data: { branch_id: number; date: string; items: { raw_material_id: number; stock: number; remaining?: number }[] }) {
       const { post } = useApi()
       await post('/raw-material-stocks/bulk', data)
     }

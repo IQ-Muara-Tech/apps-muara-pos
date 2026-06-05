@@ -39,7 +39,7 @@
         <div class="hidden md:grid md:grid-cols-[1fr_100px_100px_40px] gap-3 px-3 py-2 text-xs font-medium text-gray-500">
           <span>Bahan Baku</span>
           <span class="text-center">Qty</span>
-          <span class="text-center">Terjual</span>
+          <span class="text-center">Sisa</span>
           <span></span>
         </div>
         <div v-for="(item, idx) in stockItems" :key="item.id || idx" class="bg-white rounded-xl border border-gray-200 p-3">
@@ -56,8 +56,8 @@
               <input v-model.number="item.stock" type="number" step="0.01" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" placeholder="Qty" />
             </div>
             <div class="flex-1">
-              <label class="text-[10px] text-gray-400 font-medium mb-1 block">Terjual</label>
-              <input v-model.number="item.sold" type="number" step="0.01" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" placeholder="Terjual" />
+              <label class="text-[10px] text-gray-400 font-medium mb-1 block">Sisa</label>
+              <input v-model.number="item.remaining" type="number" step="0.01" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" placeholder="Sisa" />
             </div>
             <button @click="removeItem(item, idx)" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors flex-shrink-0 mt-5">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
@@ -86,7 +86,7 @@ interface StockFormItem {
   id: number | null
   raw_material_id: number | null
   stock: number
-  sold: number
+  remaining: number
 }
 
 const store = useRawMaterialStore()
@@ -121,7 +121,7 @@ function isMaterialUsed(materialId: number, currentIdx: number): boolean {
 }
 
 function addItem() {
-  stockItems.value.push({ id: null, raw_material_id: null, stock: 0, sold: 0 })
+  stockItems.value.push({ id: null, raw_material_id: null, stock: 0, remaining: 0 })
 }
 
 async function removeItem(item: StockFormItem, idx: number) {
@@ -153,7 +153,7 @@ function prefillStockData() {
     id: s.id,
     raw_material_id: s.raw_material_id,
     stock: Number(s.stock),
-    sold: Number(s.sold)
+    remaining: Number(s.remaining)
   }))
 }
 
@@ -167,7 +167,7 @@ async function handleSave() {
       items: stockItems.value.map(i => ({
         raw_material_id: i.raw_material_id!,
         stock: i.stock,
-        sold: i.sold
+        remaining: i.remaining
       }))
     })
     await loadStocks()
