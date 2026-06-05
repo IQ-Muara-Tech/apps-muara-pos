@@ -39,7 +39,7 @@ export interface RawMaterial {
 }
 
 export interface RawMaterialStock {
-  id: number
+  id: string
   raw_material_id: number
   branch_id: number
   created_user_id: number
