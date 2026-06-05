@@ -466,7 +466,7 @@ const _routes = [
   {
     name: "profile",
     path: "/profile",
-    component: () => import('./profile-DdZ435_D.mjs')
+    component: () => import('./profile-BtXlXmPS.mjs')
   },
   {
     name: "reports",
@@ -486,7 +486,7 @@ const _routes = [
   {
     name: "categories",
     path: "/categories",
-    component: () => import('./categories-DUcFqEz-.mjs')
+    component: () => import('./categories-BUY-Qmri.mjs')
   },
   {
     name: "expenditures",
@@ -986,7 +986,7 @@ const plugins = [
 ];
 const layouts = {
   auth: defineAsyncComponent(() => import('./auth-SX1oNE4l.mjs').then((m) => m.default || m)),
-  default: defineAsyncComponent(() => import('./default-Dg4CpbtN.mjs').then((m) => m.default || m))
+  default: defineAsyncComponent(() => import('./default-CApqhRYt.mjs').then((m) => m.default || m))
 };
 const routeRulesMatcher = _routeRulesMatcher;
 const LayoutLoader = defineComponent({

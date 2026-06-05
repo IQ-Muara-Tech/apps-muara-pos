@@ -73,6 +73,24 @@
       Keluar
     </button>
 
+    <button
+      @click="handleExitApp"
+      class="w-full flex items-center justify-center gap-2 bg-gray-50 text-gray-600 py-3 rounded-xl text-sm font-semibold hover:bg-gray-100 border border-gray-200 transition-colors mt-3"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+      </svg>
+      Keluar Aplikasi
+    </button>
+
+    <Transition name="fade">
+      <div v-if="showExitToast" class="fixed bottom-24 left-4 right-4 z-50 max-w-md mx-auto">
+        <div class="bg-gray-900 text-white text-sm text-center py-3 px-4 rounded-xl shadow-lg">
+          Tekan Back sekali lagi untuk keluar aplikasi
+        </div>
+      </div>
+    </Transition>
+
     <Teleport to="body">
       <Transition name="fade">
         <div v-if="showLogoutModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -109,10 +127,34 @@
 <script setup lang="ts">
 const auth = useAuthStore()
 const showLogoutModal = ref(false)
+const showExitToast = ref(false)
+let exitTimeout: ReturnType<typeof setTimeout> | null = null
 
 function handleLogout() {
   showLogoutModal.value = false
   auth.logout()
+}
+
+function handleExitApp() {
+  auth.logout()
+  showExitToast.value = true
+
+  history.pushState({ exit: true }, '', window.location.href)
+
+  const onBack = () => {
+    if (exitTimeout) clearTimeout(exitTimeout)
+    showExitToast.value = false
+    window.removeEventListener('popstate', onBack)
+    window.location.href = 'about:blank'
+  }
+
+  window.addEventListener('popstate', onBack)
+
+  exitTimeout = setTimeout(() => {
+    showExitToast.value = false
+    window.removeEventListener('popstate', onBack)
+    exitTimeout = null
+  }, 3000)
 }
 </script>
 

@@ -458,7 +458,7 @@ const _routes = [
   {
     name: "profile",
     path: "/profile",
-    component: () => import("./_nuxt/profile-DdZ435_D.js")
+    component: () => import("./_nuxt/profile-BtXlXmPS.js")
   },
   {
     name: "reports",
@@ -478,7 +478,7 @@ const _routes = [
   {
     name: "categories",
     path: "/categories",
-    component: () => import("./_nuxt/categories-DUcFqEz-.js")
+    component: () => import("./_nuxt/categories-BUY-Qmri.js")
   },
   {
     name: "expenditures",
@@ -978,7 +978,7 @@ const plugins = [
 ];
 const layouts = {
   auth: defineAsyncComponent(() => import("./_nuxt/auth-SX1oNE4l.js").then((m) => m.default || m)),
-  default: defineAsyncComponent(() => import("./_nuxt/default-Dg4CpbtN.js").then((m) => m.default || m))
+  default: defineAsyncComponent(() => import("./_nuxt/default-CApqhRYt.js").then((m) => m.default || m))
 };
 const routeRulesMatcher = _routeRulesMatcher;
 const LayoutLoader = defineComponent({

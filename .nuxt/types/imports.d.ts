@@ -133,7 +133,6 @@ declare global {
   const usePreviewMode: typeof import('../../node_modules/nuxt/dist/app/composables/preview').usePreviewMode
   const useProductStore: typeof import('../../stores/product').useProductStore
   const usePullToRefresh: typeof import('../../composables/usePullToRefresh').usePullToRefresh
-  const usePwaInstall: typeof import('../../composables/usePwaInstall').usePwaInstall
   const useRawMaterialStore: typeof import('../../stores/raw-material').useRawMaterialStore
   const useReportStore: typeof import('../../stores/report').useReportStore
   const useRequestEvent: typeof import('../../node_modules/nuxt/dist/app/composables/ssr').useRequestEvent
@@ -353,7 +352,6 @@ declare module 'vue' {
     readonly usePreviewMode: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/preview')['usePreviewMode']>
     readonly useProductStore: UnwrapRef<typeof import('../../stores/product')['useProductStore']>
     readonly usePullToRefresh: UnwrapRef<typeof import('../../composables/usePullToRefresh')['usePullToRefresh']>
-    readonly usePwaInstall: UnwrapRef<typeof import('../../composables/usePwaInstall')['usePwaInstall']>
     readonly useRawMaterialStore: UnwrapRef<typeof import('../../stores/raw-material')['useRawMaterialStore']>
     readonly useReportStore: UnwrapRef<typeof import('../../stores/report')['useReportStore']>
     readonly useRequestEvent: UnwrapRef<typeof import('../../node_modules/nuxt/dist/app/composables/ssr')['useRequestEvent']>

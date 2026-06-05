@@ -17,16 +17,6 @@
       </NuxtLink>
     </nav>
 
-    <button
-      v-if="!isInstalled"
-      @click="install"
-      class="mx-3 mb-2 py-2 bg-primary-600 text-white rounded-lg text-sm font-medium hover:bg-primary-700 active:scale-95 transition-all flex items-center justify-center gap-2">
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-      </svg>
-      <span>Install Aplikasi</span>
-    </button>
-
     <NuxtLink to="/profile" class="px-4 py-4 border-t border-gray-100 flex items-center gap-3 hover:bg-gray-50 transition-colors">
       <div class="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 font-bold text-sm">
         {{ auth.user?.name?.charAt(0) }}
@@ -44,7 +34,6 @@ import { h, defineComponent } from 'vue'
 
 const route = useRoute()
 const auth = useAuthStore()
-const { isInstalled, install } = usePwaInstall()
 
 const HomeIcon = defineComponent({
   setup() {

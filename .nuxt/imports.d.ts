@@ -33,7 +33,6 @@ export { defineLazyHydrationComponent } from '#app/composables/lazy-hydration';
 export { useApi } from '../composables/useApi';
 export { useAppRefresh } from '../composables/useAppRefresh';
 export { usePullToRefresh } from '../composables/usePullToRefresh';
-export { usePwaInstall } from '../composables/usePwaInstall';
 export { useAuthStore } from '../stores/auth';
 export { useBranchStore } from '../stores/branch';
 export { useCategoryStore } from '../stores/category';

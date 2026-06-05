@@ -1,1 +1,0 @@
-import{z as u}from"./IfsZSRSl.js";const e=u(null),r=u(!1);function f(){function n(s){e.value=s}function t(){e.value=null}async function a(){!e.value||r.value||(r.value=!0,await e.value(),setTimeout(()=>{r.value=!1},600))}return{registerRefresh:n,unregisterRefresh:t,triggerRefresh:a,isLoading:r}}export{f as u};

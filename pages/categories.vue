@@ -7,7 +7,7 @@
     </div>
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-lg font-bold text-gray-900">Kategori</h2>
-      <button @click="openCreate" class="bg-primary-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-primary-700 active:scale-95 transition-all">+ Tambah</button>
+      <button v-if="!auth.isKasir" @click="openCreate" class="bg-primary-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-primary-700 active:scale-95 transition-all">+ Tambah</button>
     </div>
 
     <div class="mb-4">
@@ -42,7 +42,7 @@
 
       <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div v-for="cat in filtered" :key="cat.id"
-          @click="openEdit(cat)"
+          @click="auth.isKasir ? null : openEdit(cat)"
           class="bg-white rounded-xl border border-gray-100 p-4 flex items-center justify-between hover:border-primary-300 hover:shadow-md cursor-pointer transition-all active:scale-[0.98]"
         >
           <div class="flex items-center gap-3">
@@ -56,7 +56,7 @@
               <span class="text-[11px] text-gray-400">{{ cat.branch?.name || '-' }}</span>
             </div>
           </div>
-          <button @click.stop="confirmDelete(cat)" class="p-2 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all">
+          <button v-if="!auth.isKasir" @click.stop="confirmDelete(cat)" class="p-2 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
             </svg>

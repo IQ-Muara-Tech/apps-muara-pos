@@ -14,10 +14,6 @@ export default defineNuxtConfig({
   },
   pwa: {
     registerType: 'autoUpdate',
-    devOptions: {
-      enabled: true,
-      type: 'module'
-    },
     workbox: {
       globPatterns: ['**/*.{js,css,json,png,svg,ico}'],
       navigateFallback: null,
