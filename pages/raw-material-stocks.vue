@@ -21,16 +21,7 @@
       </div>
       <div v-if="auth.isKasir">
         <label class="block text-xs font-medium text-gray-700 mb-1">Tanggal</label>
-        <input
-          v-model="filterDate"
-          type="date"
-          @change="loadStocks"
-          :readonly="!isToday"
-          :class="[
-            'w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none',
-            isToday ? 'focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white' : 'bg-gray-50 text-gray-500 cursor-not-allowed'
-          ]"
-        />
+        <input v-model="filterDate" type="date" @change="loadStocks" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none bg-white" />
       </div>
     </div>
 
@@ -55,7 +46,7 @@
         <div v-for="(item, idx) in stockItems" :key="item.id || idx" class="bg-white rounded-xl border border-gray-200 p-3">
           <div>
             <label class="text-[10px] text-gray-400 font-medium mb-1 block">Bahan Baku</label>
-            <select v-model="item.raw_material_id" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none bg-white">
+            <select v-model="item.raw_material_id" :disabled="auth.isKasir && !isToday" :class="['w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none', auth.isKasir && !isToday ? 'bg-gray-50 text-gray-500 cursor-not-allowed' : 'focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white']">
               <option :value="null" disabled>Pilih bahan</option>
               <option v-for="m in materials" :key="m.id" :value="m.id" :disabled="isMaterialUsed(m.id, idx)">{{ m.name }} ({{ m.unit }})</option>
             </select>
@@ -63,13 +54,13 @@
           <div class="flex items-center gap-3 mt-2">
             <div class="flex-1">
               <label class="text-[10px] text-gray-400 font-medium mb-1 block">Qty</label>
-              <input v-model.number="item.stock" type="number" step="0.01" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" placeholder="Qty" />
+              <input v-model.number="item.stock" type="number" step="0.01" min="0" :readonly="auth.isKasir && !isToday" :class="['w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none', auth.isKasir && !isToday ? 'bg-gray-50 text-gray-500 cursor-not-allowed' : 'focus:ring-2 focus:ring-primary-500 focus:border-primary-500']" placeholder="Qty" />
             </div>
             <div class="flex-1">
               <label class="text-[10px] text-gray-400 font-medium mb-1 block">Sisa</label>
-              <input v-model.number="item.remaining" type="number" step="0.01" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" placeholder="Sisa" />
+              <input v-model.number="item.remaining" type="number" step="0.01" min="0" :readonly="auth.isKasir && !isToday" :class="['w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none', auth.isKasir && !isToday ? 'bg-gray-50 text-gray-500 cursor-not-allowed' : 'focus:ring-2 focus:ring-primary-500 focus:border-primary-500']" placeholder="Sisa" />
             </div>
-            <button @click="removeItem(item, idx)" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors flex-shrink-0 mt-5">
+            <button v-if="isToday" @click="removeItem(item, idx)" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors flex-shrink-0 mt-5">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
           </div>
