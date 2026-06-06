@@ -20,7 +20,17 @@
         <input v-model="filterDate" type="date" @change="loadStocks" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" />
       </div>
       <div v-if="auth.isKasir">
-        <p class="text-sm text-gray-600">{{ formatDate(selectedDate) }}</p>
+        <label class="block text-xs font-medium text-gray-700 mb-1">Tanggal</label>
+        <input
+          v-model="filterDate"
+          type="date"
+          @change="loadStocks"
+          :readonly="!isToday"
+          :class="[
+            'w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none',
+            isToday ? 'focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white' : 'bg-gray-50 text-gray-500 cursor-not-allowed'
+          ]"
+        />
       </div>
     </div>
 
@@ -66,11 +76,11 @@
         </div>
       </div>
 
-      <button @click="addItem" class="w-full py-3 border-2 border-dashed border-gray-200 rounded-xl text-sm text-gray-400 hover:border-primary-300 hover:text-primary-500 transition-colors mb-4">
+      <button v-if="isToday" @click="addItem" class="w-full py-3 border-2 border-dashed border-gray-200 rounded-xl text-sm text-gray-400 hover:border-primary-300 hover:text-primary-500 transition-colors mb-4">
         + Tambah Bahan
       </button>
 
-      <button @click="handleSave" :disabled="!canSave || saving" class="w-full bg-primary-600 text-white py-3 rounded-xl font-semibold hover:bg-primary-700 disabled:opacity-50 transition-colors">
+      <button v-if="isToday" @click="handleSave" :disabled="!canSave || saving" class="w-full bg-primary-600 text-white py-3 rounded-xl font-semibold hover:bg-primary-700 disabled:opacity-50 transition-colors">
         <LoadingSpinner v-if="saving" />
         <span v-else>Simpan</span>
       </button>
@@ -99,6 +109,7 @@ const saving = ref(false)
 const stockItems = ref<StockFormItem[]>([])
 
 const selectedDate = computed(() => filterDate.value)
+const isToday = computed(() => filterDate.value === new Date().toISOString().slice(0, 10))
 const effectiveBranch = computed(() => {
   if (auth.isKasir) return String(auth.selectedBranch?.id || '')
   return selectedBranch.value
