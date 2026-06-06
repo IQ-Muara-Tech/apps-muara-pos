@@ -143,6 +143,11 @@ const store = useExpenditureStore()
 const auth = useAuthStore()
 const { loading } = storeToRefs(store)
 
+function getToday() {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
 const selectedBranch = ref('')
 const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
 const years = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i)
@@ -154,7 +159,7 @@ const editing = ref<Expenditure | null>(null)
 const formCategoryId = ref<number | null>(null)
 const formDesc = ref('')
 const formAmount = ref('')
-const formDate = ref(new Date().toISOString().slice(0, 10))
+const formDate = ref(getToday())
 const saving = ref(false)
 const deletingExpenditure = ref<Expenditure | null>(null)
 const deleting = ref(false)
@@ -179,7 +184,7 @@ function openForm(e?: Expenditure) {
     formCategoryId.value = null
     formDesc.value = ''
     formAmount.value = ''
-    formDate.value = new Date().toISOString().slice(0, 10)
+    formDate.value = getToday()
   }
   showForm.value = true
 }

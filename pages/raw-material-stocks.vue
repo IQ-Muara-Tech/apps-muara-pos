@@ -94,13 +94,18 @@ const store = useRawMaterialStore()
 const auth = useAuthStore()
 const { loading } = storeToRefs(store)
 
+function getToday() {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
 const selectedBranch = ref('')
-const filterDate = ref(new Date().toISOString().slice(0, 10))
+const filterDate = ref(getToday())
 const saving = ref(false)
 const stockItems = ref<StockFormItem[]>([])
 
 const selectedDate = computed(() => filterDate.value)
-const isToday = computed(() => filterDate.value === new Date().toISOString().slice(0, 10))
+const isToday = computed(() => filterDate.value === getToday())
 const effectiveBranch = computed(() => {
   if (auth.isKasir) return String(auth.selectedBranch?.id || '')
   return selectedBranch.value
