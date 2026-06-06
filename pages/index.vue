@@ -39,6 +39,10 @@
       </div>
     </div>
 
+    <div v-if="auth.isKasir && summary.today_revenue >= 400000" class="bg-yellow-50 rounded-xl p-4 border border-yellow-200 mb-6">
+      <p class="text-sm font-bold text-yellow-700">Selamat! Kamu mendapatkan bonus Rp10.000 hari ini</p>
+    </div>
+
     <div v-if="monthlyData.length && !auth.isKasir" class="bg-white rounded-xl border border-gray-200 p-4 mb-6">
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-sm font-semibold text-gray-900">Omset Bulanan {{ currentYear }}</h2>
