@@ -116,6 +116,17 @@
             <p class="text-xs text-gray-500 mb-4">* Yang bisa di-export hanya transaksi yang statusnya sudah diselesaikan</p>
             <div class="space-y-3">
               <div class="flex gap-2">
+                <label class="flex items-center gap-1.5 text-xs font-medium text-gray-700 cursor-pointer">
+                  <input type="radio" v-model="exportMode" value="month" class="text-primary-600" />
+                  Bulan & Tahun
+                </label>
+                <label class="flex items-center gap-1.5 text-xs font-medium text-gray-700 cursor-pointer">
+                  <input type="radio" v-model="exportMode" value="range" class="text-primary-600" />
+                  Range Tanggal
+                </label>
+              </div>
+
+              <div v-if="exportMode === 'month'" class="flex gap-2">
                 <div class="flex-1">
                   <label class="block text-xs font-medium text-gray-700 mb-1">Bulan</label>
                   <select v-model="exportMonth" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none bg-white">
@@ -127,6 +138,17 @@
                   <select v-model="exportYear" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none bg-white">
                     <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
                   </select>
+                </div>
+              </div>
+
+              <div v-if="exportMode === 'range'" class="flex gap-2">
+                <div class="flex-1">
+                  <label class="block text-xs font-medium text-gray-700 mb-1">Dari Tanggal</label>
+                  <input v-model="exportDateFrom" type="date" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" />
+                </div>
+                <div class="flex-1">
+                  <label class="block text-xs font-medium text-gray-700 mb-1">Sampai</label>
+                  <input v-model="exportDateTo" type="date" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" />
                 </div>
               </div>
             </div>
@@ -165,16 +187,28 @@ const years = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i)
 
 const showExportModal = ref(false)
 const showBackdatePicker = ref(false)
+const exportMode = ref('month')
 const exportMonth = ref(new Date().getMonth() + 1)
 const exportYear = ref(new Date().getFullYear())
+const exportDateFrom = ref('')
+const exportDateTo = ref('')
 const exporting = ref(false)
 
 async function handleExport() {
   exporting.value = true
   try {
     const params = new URLSearchParams()
-    params.append('month', String(exportMonth.value))
-    params.append('year', String(exportYear.value))
+    if (exportMode.value === 'month') {
+      params.append('month', String(exportMonth.value))
+      params.append('year', String(exportYear.value))
+    } else {
+      if (!exportDateFrom.value || !exportDateTo.value) {
+        alert('Isi tanggal dari dan sampai')
+        return
+      }
+      params.append('date_from', exportDateFrom.value)
+      params.append('date_to', exportDateTo.value)
+    }
     if (selectedBranch.value) params.append('branch_id', selectedBranch.value)
 
     const token = auth.token || ''
@@ -187,7 +221,9 @@ async function handleExport() {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `Laporan_Penjualan_${months[exportMonth.value - 1]}_${exportYear.value}.xlsx`
+    a.download = exportMode.value === 'month'
+      ? `Laporan_Penjualan_${months[exportMonth.value - 1]}_${exportYear.value}.xlsx`
+      : `Laporan_Penjualan_${exportDateFrom.value}_sd_${exportDateTo.value}.xlsx`
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
