@@ -91,9 +91,11 @@
     </div>
 
     <div v-if="monthlyData.length && !auth.isKasir" class="bg-white rounded-xl border border-gray-200 p-4 mb-6">
-      <div class="flex items-center justify-between mb-3">
+      <div class="mb-2">
         <h2 class="text-sm font-semibold text-gray-900">Ringkasan Bulan</h2>
-        <select v-model="ringkasanMonth" class="px-2 py-1 border border-gray-300 rounded-lg text-xs outline-none bg-white">
+      </div>
+      <div class="flex gap-2 mb-3">
+        <select v-model="ringkasanMonth" class="flex-1 px-3 py-1.5 border border-gray-300 rounded-lg text-xs outline-none bg-white appearance-none">
           <option v-for="(m, i) in months" :key="i" :value="i + 1">{{ m }}</option>
         </select>
       </div>
@@ -114,16 +116,16 @@
     </div>
 
     <div v-if="dailyData.length && !auth.isKasir" class="bg-white rounded-xl border border-gray-200 p-4 mb-6">
-      <div class="flex items-center justify-between mb-4">
+      <div class="mb-2">
         <h2 class="text-sm font-semibold text-gray-900">Grafik Harian</h2>
-        <div class="flex gap-2">
-          <select v-model="dailyMonth" @change="fetchDailyRevenue" class="px-2 py-1 border border-gray-300 rounded-lg text-xs outline-none bg-white">
-            <option v-for="(m, i) in months" :key="i" :value="i + 1">{{ m }}</option>
-          </select>
-          <select v-model="dailyYear" @change="fetchDailyRevenue" class="px-2 py-1 border border-gray-300 rounded-lg text-xs outline-none bg-white">
-            <option v-for="y in yearList" :key="y" :value="y">{{ y }}</option>
-          </select>
-        </div>
+      </div>
+      <div class="flex gap-2 mb-4">
+        <select v-model="dailyMonth" @change="fetchDailyRevenue" class="flex-1 px-3 py-1.5 border border-gray-300 rounded-lg text-xs outline-none bg-white appearance-none">
+          <option v-for="(m, i) in months" :key="i" :value="i + 1">{{ m }}</option>
+        </select>
+        <select v-model="dailyYear" @change="fetchDailyRevenue" class="flex-1 px-3 py-1.5 border border-gray-300 rounded-lg text-xs outline-none bg-white appearance-none">
+          <option v-for="y in yearList" :key="y" :value="y">{{ y }}</option>
+        </select>
       </div>
       <div class="flex gap-1.5 overflow-x-auto pb-2" style="min-height: 120px;">
         <div v-for="item in dailyData" :key="item.date" class="flex-shrink-0 w-10 flex flex-col items-center gap-1">
