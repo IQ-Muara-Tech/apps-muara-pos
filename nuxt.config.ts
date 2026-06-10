@@ -46,8 +46,8 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      // apiBase: 'https://api-pos.muaratech.com/api'
-      apiBase: 'http://localhost:8000/api'
+      apiBase: 'https://api-pos.muaratech.com/api'
+      // apiBase: 'http://localhost:8000/api'
     }
   },
   compatibilityDate: '2025-06-05'

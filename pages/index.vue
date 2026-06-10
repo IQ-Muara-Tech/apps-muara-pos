@@ -74,9 +74,63 @@
       <div v-else class="h-32 flex items-center justify-center text-sm text-gray-400">
         Memuat data...
       </div>
-      <div v-if="monthlyData.length" class="mt-3 pt-3 border-t border-gray-100 flex justify-between">
-        <span class="text-xs text-gray-500">Total Tahun Ini</span>
-        <span class="text-sm font-semibold text-primary-600">{{ formatRupiah(yearlyTotal) }}</span>
+      <div v-if="monthlyData.length" class="mt-3 pt-3 border-t border-gray-100 space-y-1">
+        <div class="flex justify-between">
+          <span class="text-xs text-gray-500">Total Pendapatan</span>
+          <span class="text-sm font-semibold text-primary-600">{{ formatRupiah(yearlyTotal) }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-xs text-gray-500">Total Pengeluaran</span>
+          <span class="text-sm font-semibold text-red-600">{{ formatRupiah(yearlyExpenditure) }}</span>
+        </div>
+        <div class="flex justify-between pt-1 border-t border-dashed border-gray-200">
+          <span class="text-xs font-medium text-gray-700">Total Bersih</span>
+          <span class="text-sm font-bold text-green-600">{{ formatRupiah(yearlyNet) }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="monthlyData.length && !auth.isKasir" class="bg-white rounded-xl border border-gray-200 p-4 mb-6">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-sm font-semibold text-gray-900">Ringkasan Bulan</h2>
+        <select v-model="ringkasanMonth" class="px-2 py-1 border border-gray-300 rounded-lg text-xs outline-none bg-white">
+          <option v-for="(m, i) in months" :key="i" :value="i + 1">{{ m }}</option>
+        </select>
+      </div>
+      <div class="space-y-1.5">
+        <div class="flex justify-between">
+          <span class="text-xs text-gray-500">Pendapatan</span>
+          <span class="text-sm font-semibold text-primary-600">{{ formatRupiah(monthRevenue) }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-xs text-gray-500">Pengeluaran</span>
+          <span class="text-sm font-semibold text-red-600">{{ formatRupiah(monthExpenditure) }}</span>
+        </div>
+        <div class="flex justify-between pt-1 border-t border-dashed border-gray-200">
+          <span class="text-xs font-medium text-gray-700">Bersih</span>
+          <span class="text-sm font-bold text-green-600">{{ formatRupiah(monthNet) }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="dailyData.length && !auth.isKasir" class="bg-white rounded-xl border border-gray-200 p-4 mb-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-sm font-semibold text-gray-900">Grafik Harian</h2>
+        <div class="flex gap-2">
+          <select v-model="dailyMonth" @change="fetchDailyRevenue" class="px-2 py-1 border border-gray-300 rounded-lg text-xs outline-none bg-white">
+            <option v-for="(m, i) in months" :key="i" :value="i + 1">{{ m }}</option>
+          </select>
+          <select v-model="dailyYear" @change="fetchDailyRevenue" class="px-2 py-1 border border-gray-300 rounded-lg text-xs outline-none bg-white">
+            <option v-for="y in yearList" :key="y" :value="y">{{ y }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="flex gap-1.5 overflow-x-auto pb-2" style="min-height: 120px;">
+        <div v-for="item in dailyData" :key="item.date" class="flex-shrink-0 w-10 flex flex-col items-center gap-1">
+          <span v-if="item.total_revenue > 0" class="text-[9px] text-gray-400">{{ formatRupiahShort(item.total_revenue) }}</span>
+          <div class="w-full rounded-t" :class="item.total_revenue > 0 ? 'bg-primary-400' : 'bg-gray-100'" :style="{ height: getDailyBarHeight(item.total_revenue) + 'px' }"></div>
+          <span class="text-[10px] text-gray-500">{{ item.day }}</span>
+        </div>
       </div>
     </div>
 
@@ -149,17 +203,48 @@ interface MonthlyItem {
 const lowStockMaterials = ref<LowStockMaterial[]>([])
 const monthlyData = ref<MonthlyItem[]>([])
 const currentYear = new Date().getFullYear()
+const yearlyExpenditure = ref(0)
+const yearlyNet = ref(0)
 
-const yearlyTotal = computed(() => monthlyData.value.reduce((sum, m) => sum + m.total_revenue, 0))
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']
+const yearList = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i)
+const ringkasanMonth = ref(new Date().getMonth() + 1)
+const dailyData = ref<any[]>([])
+const dailyMonth = ref(new Date().getMonth() + 1)
+const dailyYear = ref(new Date().getFullYear())
+const dailyMaxRevenue = computed(() => Math.max(...dailyData.value.map((d: any) => d.total_revenue), 1))
+
+const yearlyTotal = computed(() => monthlyData.value.reduce((sum: number, m: any) => sum + (m.total_revenue || 0), 0))
 
 const maxRevenue = computed(() => {
   const max = Math.max(...monthlyData.value.map(m => m.total_revenue), 1)
   return max
 })
 
+const monthRevenue = computed(() => {
+  const m = monthlyData.value.find((d: any) => d.month === ringkasanMonth.value)
+  return m?.total_revenue || 0
+})
+const monthExpenditure = computed(() => {
+  const m = monthlyData.value.find((d: any) => d.month === ringkasanMonth.value)
+  return m?.total_expenditure || 0
+})
+const monthNet = computed(() => monthRevenue.value - monthExpenditure.value)
+
 function getBarHeight(revenue: number) {
   if (revenue === 0) return 5
   return Math.max(5, (revenue / maxRevenue.value) * 100)
+}
+
+function getDailyBarHeight(revenue: number) {
+  if (revenue === 0) return 4
+  return Math.max(4, (revenue / dailyMaxRevenue.value) * 80)
+}
+
+function formatRupiahShort(value: number) {
+  if (value >= 1000000) return `${(value / 1000000).toFixed(1)}jt`
+  if (value >= 1000) return `${(value / 1000).toFixed(0)}rb`
+  return `${value}`
 }
 
 const CategoryIcon = defineComponent({
@@ -293,12 +378,24 @@ async function fetchMonthlyRevenue() {
     const params: Record<string, any> = { year: currentYear }
     if (effectiveBranch.value) params.branch_id = effectiveBranch.value
     const data: any = await get('/dashboard/monthly-revenue', params)
-    monthlyData.value = data.data || data
+    monthlyData.value = data.data || []
+    yearlyExpenditure.value = data.total_expenditure || 0
+    yearlyNet.value = data.total_net || 0
+  } catch {}
+}
+
+async function fetchDailyRevenue() {
+  try {
+    const { get } = useApi()
+    const params: Record<string, any> = { month: dailyMonth.value, year: dailyYear.value }
+    if (effectiveBranch.value) params.branch_id = effectiveBranch.value
+    const data: any = await get('/dashboard/daily-revenue', params)
+    dailyData.value = data.data || data
   } catch {}
 }
 
 async function refreshData() {
-  const tasks = [fetchSummary(), fetchLowStock()]
+  const tasks = [fetchSummary(), fetchLowStock(), fetchDailyRevenue()]
   if (!auth.isKasir) tasks.push(fetchMonthlyRevenue())
   await Promise.all(tasks)
 }
