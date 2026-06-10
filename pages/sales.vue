@@ -6,27 +6,48 @@
       <p v-else class="text-xs text-gray-300 self-center">Tarik ke bawah</p>
     </div>
     <div class="flex items-center justify-between mb-4">
-      <h2 class="text-lg font-bold text-gray-900">Transaksi Hari Ini</h2>
-      <button @click="openProductPicker" class="bg-primary-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-primary-700 active:scale-95 transition-all">
+      <h2 class="text-lg font-bold text-gray-900">Transaksi</h2>
+      <button v-if="isToday" @click="openProductPicker" class="bg-primary-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-primary-700 active:scale-95 transition-all">
         + Transaksi Baru
       </button>
     </div>
 
-    <div class="mb-4">
-      <select
-        v-if="!auth.isKasir"
-        v-model="selectedBranch"
-        @change="loadSales"
-        class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none bg-white shadow-sm"
-      >
-        <option value="">Semua Cabang</option>
-        <option v-for="b in auth.user?.branches" :key="b.id" :value="b.id">{{ b.name }}</option>
-      </select>
+    <div class="bg-white rounded-xl border border-gray-200 p-4 mb-4 space-y-3">
+      <div v-if="!auth.isKasir">
+        <label class="block text-xs font-medium text-gray-700 mb-1">Cabang</label>
+        <select
+          v-model="selectedBranch"
+          @change="loadSales"
+          class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none bg-white shadow-sm"
+        >
+          <option value="">Semua Cabang</option>
+          <option v-for="b in auth.user?.branches" :key="b.id" :value="b.id">{{ b.name }}</option>
+        </select>
+      </div>
       <div v-else-if="auth.selectedBranch" class="flex items-center gap-2 px-3 py-2.5 bg-primary-50 border border-primary-200 rounded-xl">
         <svg class="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
         </svg>
         <span class="text-sm font-medium text-primary-700">{{ auth.selectedBranch.name }}</span>
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-gray-700 mb-1">Tanggal</label>
+        <input v-model="filterDate" type="date" @change="loadSales" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" />
+      </div>
+    </div>
+
+    <div v-if="!loading && sales.length > 0" class="grid grid-cols-3 gap-3 mb-4">
+      <div class="bg-green-50 rounded-xl p-3 border border-green-100">
+        <p class="text-[10px] text-green-600 font-medium">Cash</p>
+        <p class="text-sm font-bold text-green-700 mt-0.5">{{ formatRupiah(totalCash) }}</p>
+      </div>
+      <div class="bg-purple-50 rounded-xl p-3 border border-purple-100">
+        <p class="text-[10px] text-purple-600 font-medium">QRIS</p>
+        <p class="text-sm font-bold text-purple-700 mt-0.5">{{ formatRupiah(totalQris) }}</p>
+      </div>
+      <div class="bg-primary-50 rounded-xl p-3 border border-primary-100">
+        <p class="text-[10px] text-primary-600 font-medium">Total</p>
+        <p class="text-sm font-bold text-primary-700 mt-0.5">{{ formatRupiah(totalSales) }}</p>
       </div>
     </div>
 
@@ -39,12 +60,12 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 000 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
           </svg>
         </div>
-        <p class="text-gray-500 font-medium mb-1 text-sm">Belum ada transaksi hari ini</p>
+        <p class="text-gray-500 font-medium mb-1 text-sm">Belum ada transaksi pada tanggal ini</p>
         <p class="text-xs text-gray-400">Tekan tombol "+ Transaksi Baru" untuk memulai</p>
       </div>
 
       <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div class="md:col-span-2 text-xs text-gray-400 mb-2 font-medium">{{ formatTanggal(new Date()) }}</div>
+        <div class="md:col-span-2 text-xs text-gray-400 mb-2 font-medium">{{ formatTanggal(filterDate) }}</div>
 
         <div
           v-for="s in sales"
@@ -191,8 +212,18 @@ const sale = useSaleStore()
 const auth = useAuthStore()
 const { sales, loading } = storeToRefs(sale)
 
+function getToday() {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
 const showProductPicker = ref(false)
 const selectedBranch = ref('')
+const filterDate = ref(getToday())
+const isToday = computed(() => filterDate.value === getToday())
+const totalCash = computed(() => sales.value.filter(s => s.payment_type?.name === 'Cash').reduce((sum, s) => sum + s.total, 0))
+const totalQris = computed(() => sales.value.filter(s => s.payment_type?.name === 'QRIS').reduce((sum, s) => sum + s.total, 0))
+const totalSales = computed(() => sales.value.reduce((sum, s) => sum + s.total, 0))
 const pickerBranchId = computed(() => auth.isKasir ? auth.selectedBranch?.id : (selectedBranch.value ? Number(selectedBranch.value) : undefined))
 const deletingSale = ref<Sale | null>(null)
 const deleting = ref(false)
@@ -206,8 +237,8 @@ function formatRupiah(value: number) {
   return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value)
 }
 
-function formatTanggal(date: Date) {
-  return format(date, 'EEEE, dd MMMM yyyy', { locale: id })
+function formatTanggal(date: Date | string) {
+  return format(new Date(date), 'EEEE, dd MMMM yyyy', { locale: id })
 }
 
 function formatJam(dateStr: string) {
@@ -274,7 +305,7 @@ async function fetchPaymentTypes() {
 }
 
 function loadSales() {
-  const params: Record<string, any> = { today: true }
+  const params: Record<string, any> = { date_from: filterDate.value, date_to: filterDate.value }
   const branchId = auth.isKasir ? auth.selectedBranch?.id : (selectedBranch.value ? Number(selectedBranch.value) : undefined)
   if (branchId) params.branch_id = branchId
   sale.fetchAll(params)

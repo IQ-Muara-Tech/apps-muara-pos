@@ -37,6 +37,14 @@
         <p class="text-xs text-green-600 font-medium">Pendapatan Hari Ini</p>
         <p class="text-lg font-bold text-green-700 mt-1">{{ formatRupiah(summary.today_revenue) }}</p>
       </div>
+      <div class="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
+        <p class="text-xs text-emerald-600 font-medium">Pendapatan Cash</p>
+        <p class="text-lg font-bold text-emerald-700 mt-1">{{ formatRupiah(summary.today_cash) }}</p>
+      </div>
+      <div class="bg-purple-50 rounded-xl p-4 border border-purple-100">
+        <p class="text-xs text-purple-600 font-medium">Pendapatan QRIS</p>
+        <p class="text-lg font-bold text-purple-700 mt-1">{{ formatRupiah(summary.today_qris) }}</p>
+      </div>
     </div>
 
     <div v-if="auth.isKasir && summary.today_revenue >= 400000" class="bg-yellow-50 rounded-xl p-4 border border-yellow-200 mb-6">
@@ -120,7 +128,7 @@
 const auth = useAuthStore()
 
 const selectedBranch = ref('')
-const summary = reactive({ today_sales: 0, today_revenue: 0 })
+const summary = reactive({ today_sales: 0, today_revenue: 0, today_cash: 0, today_qris: 0 })
 
 interface LowStockMaterial {
   id: number
