@@ -297,6 +297,14 @@ const StockIcon = defineComponent({
   }
 })
 
+const BuildingIcon = defineComponent({
+  setup() {
+    return () => h('svg', { fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' }, [
+      h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '2', d: 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4' })
+    ])
+  }
+})
+
 const menus = computed(() => {
   const items = [
     {
@@ -321,8 +329,15 @@ const menus = computed(() => {
       icon: StockIcon
     }
   ]
-  if (auth.user?.role_id === 1) {
+  if (auth.isSuperAdmin) {
     items.push(
+      {
+        label: 'Cabang',
+        to: '/branches',
+        bgClass: 'bg-blue-50',
+        iconClass: 'text-blue-600',
+        icon: BuildingIcon
+      },
       {
         label: 'Karyawan',
         to: '/employees',
@@ -330,6 +345,23 @@ const menus = computed(() => {
         iconClass: 'text-amber-600',
         icon: EmployeeIcon
       },
+      {
+        label: 'Kat. Pengeluaran',
+        to: '/expenditure-categories',
+        bgClass: 'bg-rose-50',
+        iconClass: 'text-rose-600',
+        icon: TagIcon
+      },
+      {
+        label: 'Pengeluaran',
+        to: '/expenditures',
+        bgClass: 'bg-red-50',
+        iconClass: 'text-red-600',
+        icon: MoneyIcon
+      }
+    )
+  } else if (auth.isOwner) {
+    items.push(
       {
         label: 'Kat. Pengeluaran',
         to: '/expenditure-categories',

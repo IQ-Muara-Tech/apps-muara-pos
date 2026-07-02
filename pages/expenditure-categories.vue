@@ -180,7 +180,7 @@ function loadCategories() {
 const { pulling, pullDistance, threshold, onTouchStart, onTouchMove, onTouchEnd } = usePullToRefresh(loadCategories)
 
 onMounted(() => {
-  if (auth.user?.role_id !== 1) {
+  if (auth.isKasir) {
     navigateTo('/')
     return
   }

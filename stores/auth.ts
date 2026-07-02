@@ -10,7 +10,9 @@ export const useAuthStore = defineStore('auth', {
   }),
   getters: {
     isAuthenticated: (state) => !!state.token,
-    isKasir: (state) => state.user?.role_id === 2
+    isSuperAdmin: (state) => state.user?.role_id === 1,
+    isOwner: (state) => state.user?.role_id === 2,
+    isKasir: (state) => state.user?.role_id === 3
   },
   actions: {
     hydrate() {
@@ -40,6 +42,10 @@ export const useAuthStore = defineStore('auth', {
       try {
         const { get } = useApi()
         const data: any = await get('/user')
+        if (this.user && data.role_id !== this.user.role_id) {
+          this.logout()
+          return
+        }
         this.user = data as User
       } catch {
         this.logout()

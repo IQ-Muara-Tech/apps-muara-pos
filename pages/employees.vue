@@ -155,14 +155,13 @@ function loadData() {
 }
 
 onMounted(async () => {
-  if (auth.isKasir) {
+  if (!auth.isSuperAdmin) {
     navigateTo('/')
     return
   }
   const { registerRefresh } = useAppRefresh()
   registerRefresh(loadData)
-  const promises = [employeeStore.fetchAll(), loadRoles()]
-  if (!auth.isKasir) promises.push(loadBranches())
+  const promises = [employeeStore.fetchAll(), loadRoles(), loadBranches()]
   await Promise.all(promises)
 })
 

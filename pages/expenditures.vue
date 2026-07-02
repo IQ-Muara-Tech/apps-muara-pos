@@ -239,7 +239,7 @@ async function loadExpenditures() {
 const { pulling, pullDistance, threshold, onTouchStart, onTouchMove, onTouchEnd } = usePullToRefresh(loadExpenditures)
 
 onMounted(() => {
-  if (auth.user?.role_id !== 1) {
+  if (auth.isKasir) {
     navigateTo('/')
     return
   }

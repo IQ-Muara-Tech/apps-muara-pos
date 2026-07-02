@@ -68,7 +68,7 @@ async function handleLogin() {
   try {
     const data = await auth.login(username.value, password.value)
     const user = data.user
-    if (user.role_id === 2) {
+    if (user.role_id === 3) {
       navigateTo('/select-branch')
     } else {
       navigateTo('/')
