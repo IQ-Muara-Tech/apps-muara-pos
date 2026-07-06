@@ -127,6 +127,7 @@ export interface Expenditure {
   description: string
   amount: number
   date: string
+  type?: string | null
   expenditure_category?: { id: number; name: string }
   branch?: Branch
   created_user?: { id: number; name: string }

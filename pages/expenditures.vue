@@ -61,7 +61,10 @@
             <p class="text-sm font-bold text-red-600">{{ formatRupiah(e.amount) }}</p>
           </div>
           <div class="flex items-center justify-between">
-            <span v-if="e.expenditure_category" class="text-[11px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{{ e.expenditure_category.name }}</span>
+            <div class="flex items-center gap-1 flex-wrap">
+              <span v-if="e.expenditure_category" class="text-[11px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{{ e.expenditure_category.name }}</span>
+              <span v-if="e.type" class="text-[11px] px-2 py-0.5 rounded-full" :class="e.type === 'cash' ? 'bg-emerald-100 text-emerald-600' : 'bg-blue-100 text-blue-600'">{{ e.type === 'cash' ? 'Cash' : 'Cashless' }}</span>
+            </div>
             <div class="flex items-center gap-2">
               <button @click="openForm(e)" class="text-[11px] text-primary-600 hover:text-primary-700 px-2 py-0.5">Edit</button>
               <button @click="confirmDelete(e)" class="text-[11px] text-red-500 hover:text-red-700 px-2 py-0.5">Hapus</button>
@@ -96,6 +99,14 @@
               <div>
                 <label class="block text-xs font-medium text-gray-700 mb-1">Tanggal</label>
                 <input v-model="formDate" type="date" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">Tipe</label>
+                <select v-model="formType" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none bg-white">
+                  <option :value="null">Pilih tipe</option>
+                  <option value="cash">Cash</option>
+                  <option value="cashless">Cashless</option>
+                </select>
               </div>
             </div>
             <div class="flex gap-3 mt-6">
@@ -160,6 +171,7 @@ const formCategoryId = ref<number | null>(null)
 const formDesc = ref('')
 const formAmount = ref('')
 const formDate = ref(getToday())
+const formType = ref<string | null>(null)
 const saving = ref(false)
 const deletingExpenditure = ref<Expenditure | null>(null)
 const deleting = ref(false)
@@ -179,12 +191,14 @@ function openForm(e?: Expenditure) {
     formDesc.value = e.description
     formAmount.value = String(e.amount)
     formDate.value = e.date
+    formType.value = e.type ?? null
   } else {
     editing.value = null
     formCategoryId.value = null
     formDesc.value = ''
     formAmount.value = ''
     formDate.value = getToday()
+    formType.value = null
   }
   showForm.value = true
 }
@@ -199,6 +213,7 @@ async function handleSave() {
       description: formDesc.value,
       amount: Number(formAmount.value),
       date: formDate.value,
+      type: formType.value,
     }
     if (editing.value) {
       await store.updateExpenditure(editing.value.id, payload)

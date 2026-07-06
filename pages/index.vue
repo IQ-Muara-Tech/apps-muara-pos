@@ -83,6 +83,14 @@
           <span class="text-xs text-gray-500">Total Pengeluaran</span>
           <span class="text-sm font-semibold text-red-600">{{ formatRupiah(yearlyExpenditure) }}</span>
         </div>
+        <div class="flex justify-between">
+          <span class="text-xs text-gray-500 pl-3">Cash</span>
+          <span class="text-xs font-medium text-red-500">{{ formatRupiah(yearlyExpenditureCash) }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-xs text-gray-500 pl-3">Cashless</span>
+          <span class="text-xs font-medium text-red-500">{{ formatRupiah(yearlyExpenditureCashless) }}</span>
+        </div>
         <div class="flex justify-between pt-1 border-t border-dashed border-gray-200">
           <span class="text-xs font-medium text-gray-700">Total Bersih</span>
           <span class="text-sm font-bold text-green-600">{{ formatRupiah(yearlyNet) }}</span>
@@ -107,6 +115,14 @@
         <div class="flex justify-between">
           <span class="text-xs text-gray-500">Pengeluaran</span>
           <span class="text-sm font-semibold text-red-600">{{ formatRupiah(monthExpenditure) }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-xs text-gray-500 pl-3">Cash</span>
+          <span class="text-xs font-medium text-red-500">{{ formatRupiah(monthExpenditureCash) }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-xs text-gray-500 pl-3">Cashless</span>
+          <span class="text-xs font-medium text-red-500">{{ formatRupiah(monthExpenditureCashless) }}</span>
         </div>
         <div class="flex justify-between pt-1 border-t border-dashed border-gray-200">
           <span class="text-xs font-medium text-gray-700">Bersih</span>
@@ -206,6 +222,8 @@ const lowStockMaterials = ref<LowStockMaterial[]>([])
 const monthlyData = ref<MonthlyItem[]>([])
 const currentYear = new Date().getFullYear()
 const yearlyExpenditure = ref(0)
+const yearlyExpenditureCash = ref(0)
+const yearlyExpenditureCashless = ref(0)
 const yearlyNet = ref(0)
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']
@@ -230,6 +248,14 @@ const monthRevenue = computed(() => {
 const monthExpenditure = computed(() => {
   const m = monthlyData.value.find((d: any) => d.month === ringkasanMonth.value)
   return m?.total_expenditure || 0
+})
+const monthExpenditureCash = computed(() => {
+  const m = monthlyData.value.find((d: any) => d.month === ringkasanMonth.value)
+  return m?.total_expenditure_cash || 0
+})
+const monthExpenditureCashless = computed(() => {
+  const m = monthlyData.value.find((d: any) => d.month === ringkasanMonth.value)
+  return m?.total_expenditure_cashless || 0
 })
 const monthNet = computed(() => monthRevenue.value - monthExpenditure.value)
 
@@ -414,6 +440,8 @@ async function fetchMonthlyRevenue() {
     const data: any = await get('/dashboard/monthly-revenue', params)
     monthlyData.value = data.data || []
     yearlyExpenditure.value = data.total_expenditure || 0
+    yearlyExpenditureCash.value = data.total_expenditure_cash || 0
+    yearlyExpenditureCashless.value = data.total_expenditure_cashless || 0
     yearlyNet.value = data.total_net || 0
   } catch {}
 }
