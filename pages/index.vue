@@ -55,23 +55,25 @@
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-sm font-semibold text-gray-900">Omset Bulanan {{ currentYear }}</h2>
       </div>
-      <div v-if="monthlyData.length" class="flex items-end gap-1.5 h-32">
+      <div v-if="monthlyData.length" class="flex items-end gap-1.5 h-36">
         <div
           v-for="(item, idx) in monthlyData"
           :key="idx"
           class="flex-1 flex flex-col items-center gap-1"
         >
-          <div class="w-full relative" style="height: 100px;">
+          <span v-if="item.total_revenue > 0" class="text-[9px] text-gray-400">{{ formatRupiahShort(item.total_revenue) }}</span>
+          <div class="w-full relative" style="height: 80px;">
             <div
               class="absolute bottom-0 w-full rounded-t transition-all duration-500"
               :class="item.total_revenue > 0 ? 'bg-primary-400' : 'bg-gray-100'"
               :style="{ height: getBarHeight(item.total_revenue) + '%' }"
             ></div>
           </div>
+          <span class="text-[10px] text-gray-500">{{ item.total_sales }} trx</span>
           <span class="text-[10px] text-gray-500">{{ item.name }}</span>
         </div>
       </div>
-      <div v-else class="h-32 flex items-center justify-center text-sm text-gray-400">
+      <div v-else class="h-36 flex items-center justify-center text-sm text-gray-400">
         Memuat data...
       </div>
       <div v-if="monthlyData.length" class="mt-3 pt-3 border-t border-gray-100 space-y-1">
@@ -143,11 +145,12 @@
           <option v-for="y in yearList" :key="y" :value="y">{{ y }}</option>
         </select>
       </div>
-      <div class="flex gap-1.5 overflow-x-auto pb-2" style="min-height: 120px;">
-        <div v-for="item in dailyData" :key="item.date" class="flex-shrink-0 w-10 flex flex-col items-center gap-1">
+      <div class="flex gap-1.5 overflow-x-auto pb-2" style="height: 130px;">
+        <div v-for="item in dailyData" :key="item.date" class="flex-shrink-0 w-10 h-full flex flex-col items-center justify-end gap-1">
           <span v-if="item.total_revenue > 0" class="text-[9px] text-gray-400">{{ formatRupiahShort(item.total_revenue) }}</span>
           <div class="w-full rounded-t" :class="item.total_revenue > 0 ? 'bg-primary-400' : 'bg-gray-100'" :style="{ height: getDailyBarHeight(item.total_revenue) + 'px' }"></div>
-          <span class="text-[10px] text-gray-500">{{ item.day }}</span>
+          <span class="text-[10px] text-gray-500">{{ item.total_sales }} trx</span>
+          <span class="text-[10px] text-gray-400 font-medium">{{ item.day }}</span>
         </div>
       </div>
     </div>

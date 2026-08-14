@@ -63,7 +63,7 @@
       </button>
     </div>
 
-    <div v-if="report" class="grid grid-cols-3 gap-2 mb-4">
+    <div v-if="report" class="grid grid-cols-2 gap-2 mb-4">
       <div class="bg-primary-50 rounded-xl p-3 border border-primary-100">
         <p class="text-xs text-primary-600 font-medium">Total Transaksi</p>
         <p class="text-lg font-bold text-primary-700">{{ report.summary?.total_sales || 0 }}</p>
@@ -72,9 +72,13 @@
         <p class="text-xs text-green-600 font-medium">Pendapatan</p>
         <p class="text-sm font-bold text-green-700">{{ formatRupiah(report.summary?.total_revenue || 0) }}</p>
       </div>
-      <div class="bg-amber-50 rounded-xl p-3 border border-amber-100">
-        <p class="text-xs text-amber-600 font-medium">Rata-rata</p>
-        <p class="text-sm font-bold text-amber-700">{{ formatRupiah(report.summary?.average_per_sale || 0) }}</p>
+      <div class="bg-rose-50 rounded-xl p-3 border border-rose-100">
+        <p class="text-xs text-rose-600 font-medium">Pengeluaran</p>
+        <p class="text-sm font-bold text-rose-700">{{ formatRupiah(report.summary?.total_expenditure || 0) }}</p>
+      </div>
+      <div class="bg-blue-50 rounded-xl p-3 border border-blue-100">
+        <p class="text-xs text-blue-600 font-medium">Pendapatan Bersih</p>
+        <p class="text-sm font-bold text-blue-700">{{ formatRupiah(report.summary?.net_income || 0) }}</p>
       </div>
     </div>
 
