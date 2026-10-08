@@ -79,6 +79,7 @@
                 <span class="text-[11px] text-gray-400">{{ formatJam(s.date_time || s.created_at) }}</span>
                 <span v-if="s.branch" class="text-[10px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded">{{ s.branch?.name }}</span>
                 <span v-if="s.payment_type" class="text-[10px] px-1.5 py-0.5 rounded" :class="s.payment_type.name === 'Cash' ? 'bg-green-50 text-green-600' : 'bg-purple-50 text-purple-600'">{{ s.payment_type.name }}</span>
+                <span v-if="s.created_user" class="text-[10px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded">{{ s.created_user.name }}</span>
               </div>
             </div>
             <span

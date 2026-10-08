@@ -134,3 +134,17 @@ export interface Expenditure {
   created_at: string
   updated_at: string
 }
+
+export interface SwitchMoney {
+  id: number
+  name: string
+  from: string
+  to: string
+  amount: number
+  branch_id: number
+  user_id: number
+  branch?: Branch
+  user?: { id: number; name: string }
+  created_at: string
+  updated_at: string
+}

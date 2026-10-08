@@ -326,6 +326,14 @@ const StockIcon = defineComponent({
   }
 })
 
+const SwapIcon = defineComponent({
+  setup() {
+    return () => h('svg', { fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' }, [
+      h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '2', d: 'M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5' })
+    ])
+  }
+})
+
 const BuildingIcon = defineComponent({
   setup() {
     return () => h('svg', { fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' }, [
@@ -387,6 +395,13 @@ const menus = computed(() => {
         bgClass: 'bg-red-50',
         iconClass: 'text-red-600',
         icon: MoneyIcon
+      },
+      {
+        label: 'Tukar Uang',
+        to: '/switch-money',
+        bgClass: 'bg-cyan-50',
+        iconClass: 'text-cyan-600',
+        icon: SwapIcon
       }
     )
   } else if (auth.isOwner) {
@@ -404,6 +419,13 @@ const menus = computed(() => {
         bgClass: 'bg-red-50',
         iconClass: 'text-red-600',
         icon: MoneyIcon
+      },
+      {
+        label: 'Tukar Uang',
+        to: '/switch-money',
+        bgClass: 'bg-cyan-50',
+        iconClass: 'text-cyan-600',
+        icon: SwapIcon
       }
     )
   }

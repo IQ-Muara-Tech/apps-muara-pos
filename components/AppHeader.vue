@@ -26,6 +26,7 @@ const titles: Record<string, string> = {
   'sale-process': 'Proses Transaksi',
   'reports': 'Laporan',
   'raw-materials': 'Bahan Baku',
+  'switch-money': 'Tukar Uang',
   'profile': 'Profil'
 }
 

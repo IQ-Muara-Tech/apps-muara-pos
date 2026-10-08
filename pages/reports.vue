@@ -80,6 +80,20 @@
         <p class="text-xs text-blue-600 font-medium">Pendapatan Bersih</p>
         <p class="text-sm font-bold text-blue-700">{{ formatRupiah(report.summary?.net_income || 0) }}</p>
       </div>
+      <div
+        v-if="switchSummary && (switchSummary.to_cashless > 0 || switchSummary.to_cash > 0)"
+        class="col-span-2 bg-cyan-50 rounded-xl p-3 border border-cyan-100"
+      >
+        <p class="text-xs text-cyan-600 font-medium">Tukar Uang</p>
+        <div class="flex items-center justify-between mt-1.5">
+          <span class="text-xs text-gray-600">Cash → Cashless</span>
+          <span class="text-sm font-bold text-gray-900">{{ formatRupiah(switchSummary.to_cashless) }}</span>
+        </div>
+        <div class="flex items-center justify-between mt-1">
+          <span class="text-xs text-gray-600">Cashless → Cash</span>
+          <span class="text-sm font-bold text-gray-900">{{ formatRupiah(switchSummary.to_cash) }}</span>
+        </div>
+      </div>
     </div>
 
     <div v-if="report?.sales?.length" class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -178,6 +192,8 @@ const sale = useSaleStore()
 const auth = useAuthStore()
 const { reportData: report } = storeToRefs(reportStore)
 const { loading } = storeToRefs(reportStore)
+
+const switchSummary = computed(() => report.value?.switch_summary || null)
 
 const selectedBranch = ref('')
 const selectedPaymentType = ref('')
